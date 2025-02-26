@@ -82,10 +82,15 @@ node worker.js
 
 ## 📤 How to Use
 1️⃣ **Upload a CSV file** on the UI.
+
 2️⃣ The backend will parse and validate the file.
+
 3️⃣ Valid data will be added to the Redis queue for background processing.
+
 4️⃣ The worker will process each job and send API requests to add users.
+
 5️⃣ **Check Redis Queue** to monitor job processing:
+
 ```bash
 redis-cli
 KEYS *  # List all Redis keys
