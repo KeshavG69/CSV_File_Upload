@@ -1,5 +1,14 @@
-import "@/styles/globals.css";
+import { useEffect } from 'react';
+import { setupWorkers } from '../lib/workerSetup';
+import '../styles/globals.css';
 
-export default function App({ Component, pageProps }) {
+function MyApp({ Component, pageProps }) {
+  useEffect(() => {
+    // Setup worker handlers once when the app starts
+    setupWorkers();
+  }, []);
+
   return <Component {...pageProps} />;
 }
+
+export default MyApp;
