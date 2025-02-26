@@ -98,28 +98,7 @@ LRANGE queueName 0 -1  # Check queued jobs
 ```
 6️⃣ Once completed, you should see logs in the terminal.
 
----
 
-## 🛠️ Troubleshooting
-### 1️⃣ Redis Not Running?
-- Check Redis status:
-```bash
-sudo systemctl status redis
-```
-- Restart Redis if necessary:
-```bash
-sudo systemctl restart redis
-```
-
-### 2️⃣ File Upload Failing?
-- Ensure `multer` is correctly handling the file upload in `pages/api/upload.js`.
-- Check if `uploads/` directory exists or is writable.
-
-### 3️⃣ Worker Not Processing Jobs?
-- Ensure the worker is running with `node worker.js`.
-- Check Redis queue using `redis-cli`.
-
----
 
 ## 🔗 Resources
 - [Next.js Documentation](https://nextjs.org/docs)
