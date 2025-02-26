@@ -106,17 +106,4 @@ LRANGE queueName 0 -1  # Check queued jobs
 - [Bull (Job Queue)](https://github.com/OptimalBits/bull)
 - [Redis Documentation](https://redis.io/docs/)
 
----
-
-## 🤝 Contributing
-Feel free to open an issue or submit a pull request if you find a bug or want to improve the project!
-
----
-
-## 📜 License
-This project is licensed under the MIT License.
-
----
-
-### 🎯 Happy Coding! 🚀
 
