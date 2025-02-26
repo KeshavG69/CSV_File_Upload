@@ -13,24 +13,7 @@ This project is a Next.js application that allows users to upload CSV files cont
 
 ---
 
-## 📂 Folder Structure
-```
-nextjs-csv-processing/
-│── public/            # Static assets
-│── pages/
-│   ├── index.js       # Main UI for file upload
-│   ├── api/
-│   │   ├── upload.js  # API endpoint to handle file upload
-│── worker.js          # Worker script for processing jobs
-│── utils/
-│   ├── parseCSV.js    # CSV parsing and validation functions
-│── .env               # Environment variables
-│── .gitignore         # Ignore unnecessary files
-│── README.md          # Project documentation
-│── package.json       # Dependencies and scripts
-```
 
----
 
 ## 🛠️ Prerequisites
 Make sure you have the following installed on your system:
@@ -50,7 +33,7 @@ cd nextjs-csv-processing
 
 ### 2️⃣ Install Dependencies
 ```bash
-npm install  # or yarn install
+npm install multer csv-parser bull axios redis next-connect@0.10.2 # or yarn install
 ```
 
 ### 3️⃣ Install and Run Redis
