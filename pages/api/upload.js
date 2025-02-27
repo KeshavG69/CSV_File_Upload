@@ -6,10 +6,9 @@ import fs from "fs";
 import csvParser from "csv-parser";
 import Redis from "ioredis";
 
-// Connect to Redis
-const redis = new Redis({
-  host: "127.0.0.1", // Update with your Redis host if needed
-  port: 6379, // Default Redis port
+// Connect to Upstash Redis
+const redis = new Redis(process.env.REDIS_URL, {
+  tls: { rejectUnauthorized: false }, // Required for Upstash
 });
 
 const upload = multer({ dest: path.join(os.tmpdir(), "uploads") });
@@ -34,7 +33,7 @@ apiRoute.post((req, res) => {
       console.log("✅ Parsed CSV Data:", results); // Logs parsed CSV to console
 
       try {
-        // Store the parsed data in Redis
+        // Store the parsed data in Upstash Redis
         await redis.set("parsed_csv_data", JSON.stringify(results));
         console.log("✅ Data stored in Redis!");
 
