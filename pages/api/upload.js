@@ -1,52 +1,39 @@
-import nextConnect from "next-connect";
 import multer from "multer";
-import csv from "csv-parser";
+import nextConnect from "next-connect";
+import os from "os";
+import path from "path";
 import fs from "fs";
+import csvParser from "csv-parser";
 
-const upload = multer({ dest: "uploads/" });
+const upload = multer({ dest: path.join(os.tmpdir(), "uploads") });
 
 const apiRoute = nextConnect({
   onError(error, req, res) {
     console.error("❌ API Error:", error);
     res.status(500).json({ error: "Internal Server Error" });
   },
-})
-  .use(upload.single("file"))
-  .post((req, res) => {
-    if (!req.file) {
-      console.error("❌ No file received");
-      return res.status(400).json({ error: "No file uploaded." });
-    }
+});
 
-    const filePath = req.file.path;
-    const validUsers = [];
+apiRoute.use(upload.single("file"));
 
-    // Read and parse the CSV file
-    fs.createReadStream(filePath)
-      .pipe(csv())
-      .on("data", (row) => {
-        if (row.name && row.email) {
-          validUsers.push({ name: row.name, email: row.email });
-        }
-      })
-      .on("end", () => {
-        console.log("✅ Parsed CSV:", validUsers);
+apiRoute.post((req, res) => {
+  const filePath = req.file.path;
+  const results = [];
 
-        // Cleanup: Remove file after processing
-        fs.unlinkSync(filePath);
-
-        res.status(200).json({ validUsers });
-      })
-      .on("error", (error) => {
-        console.error("❌ CSV Parsing Error:", error);
-        res.status(500).json({ error: "Error processing CSV file." });
+  fs.createReadStream(filePath)
+    .pipe(csvParser())
+    .on("data", (data) => results.push(data))
+    .on("end", () => {
+      console.log("✅ Parsed CSV Data:", results); // Logs parsed CSV to console
+      res.status(200).json({
+        message: "✅ File uploaded and parsed successfully!",
+        data: results,
       });
-  });
+
+      // Optional: Delete file after processing
+      fs.unlinkSync(filePath);
+    });
+});
 
 export default apiRoute;
-
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+export const config = { api: { bodyParser: false } };
