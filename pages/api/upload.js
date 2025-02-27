@@ -8,7 +8,7 @@ import Redis from "ioredis";
 
 // Connect to Upstash Redis
 const redis = new Redis(process.env.REDIS_URL, {
-  tls: { rejectUnauthorized: false }, // Required for Upstash
+  tls: { rejectUnauthorized: false }, // Required for Upstash keshav
 });
 
 const upload = multer({ dest: path.join(os.tmpdir(), "uploads") });
