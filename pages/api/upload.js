@@ -4,6 +4,13 @@ import os from "os";
 import path from "path";
 import fs from "fs";
 import csvParser from "csv-parser";
+import Redis from "ioredis";
+
+// Connect to Redis
+const redis = new Redis({
+  host: "127.0.0.1", // Update with your Redis host if needed
+  port: 6379, // Default Redis port
+});
 
 const upload = multer({ dest: path.join(os.tmpdir(), "uploads") });
 
@@ -23,15 +30,25 @@ apiRoute.post((req, res) => {
   fs.createReadStream(filePath)
     .pipe(csvParser())
     .on("data", (data) => results.push(data))
-    .on("end", () => {
+    .on("end", async () => {
       console.log("✅ Parsed CSV Data:", results); // Logs parsed CSV to console
-      res.status(200).json({
-        message: "✅ File uploaded and parsed successfully!",
-        data: results,
-      });
 
-      // Optional: Delete file after processing
-      fs.unlinkSync(filePath);
+      try {
+        // Store the parsed data in Redis
+        await redis.set("parsed_csv_data", JSON.stringify(results));
+        console.log("✅ Data stored in Redis!");
+
+        res.status(200).json({
+          message: "✅ File uploaded, parsed, and stored in Redis successfully!",
+          data: results,
+        });
+      } catch (error) {
+        console.error("❌ Redis Error:", error);
+        res.status(500).json({ error: "Failed to store data in Redis" });
+      } finally {
+        // Clean up: Delete the temporary file
+        fs.unlinkSync(filePath);
+      }
     });
 });
 
