@@ -6,10 +6,11 @@ import fs from "fs";
 import csvParser from "csv-parser";
 import Redis from "ioredis";
 
-// Connect to Upstash Redis
+// Connect to Redis
 const redis = new Redis(process.env.REDIS_URL, {
-  tls: { rejectUnauthorized: false }, // Required for Upstash keshav
+  tls: { rejectUnauthorized: false }, // Required for Upstash
 });
+
 
 const upload = multer({ dest: path.join(os.tmpdir(), "uploads") });
 
@@ -33,20 +34,20 @@ apiRoute.post((req, res) => {
       console.log("✅ Parsed CSV Data:", results); // Logs parsed CSV to console
 
       try {
-        // Store the parsed data in Upstash Redis
+        // Store parsed data in Redis
         await redis.set("parsed_csv_data", JSON.stringify(results));
         console.log("✅ Data stored in Redis!");
 
+        // Send the parsed data to the frontend
         res.status(200).json({
-          message: "✅ File uploaded, parsed, and stored in Redis successfully!",
-          data: results,
+          message: "✅ File uploaded and parsed successfully!",
+          data: results,  // <-- Sending parsed data
         });
       } catch (error) {
         console.error("❌ Redis Error:", error);
         res.status(500).json({ error: "Failed to store data in Redis" });
       } finally {
-        // Clean up: Delete the temporary file
-        fs.unlinkSync(filePath);
+        fs.unlinkSync(filePath); // Delete the temporary file
       }
     });
 });
